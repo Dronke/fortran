@@ -17,6 +17,7 @@ j=j+1
 n=k+1
 end if
 end do
+P=.true.
 do while (P)
 h=0
 do j=1,100
