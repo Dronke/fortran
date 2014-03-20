@@ -1,5 +1,5 @@
 character text*70
-character a,buf
+character a*20,buf
 dimension a(100)
 integer i, l, j ,n , k, h,l1,l2
 logical P
