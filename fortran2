@@ -1,0 +1,38 @@
+character text*70
+character a,buf
+dimension a(100)
+integer i, l, j ,n , k, h,l1,l2
+logical P
+write(*,*) 'vvedite text'
+read(*,'(A70)') text
+l=LEN_trim(text)
+a(1)=text(1:1)
+n=1
+j=1
+do i=1,l+1
+if (text(i:i)==' ') then
+k=i
+a(j)=text(n:k)
+j=j+1
+n=k+1
+end if
+end do
+do while (P)
+h=0
+do j=1,100
+l1=LEN(a(j))
+l2=LEN(a(j+1))
+if (l1>l2) then
+buf=a(j)
+a(j)=a(j+1)
+a(j+1)=buf
+h=h+1
+end if
+end do
+if (h==0) then
+P=.false.
+end if
+end do
+write(*,16) (a(i),i=1,100)
+16 format (1x,'massiv=',100(A,1x))	  
+end
