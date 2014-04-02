@@ -1,7 +1,7 @@
 character text*70
-character a*20,buf
+character a*20,buf*20
 dimension a(100)
-integer i, l, j ,n , k, h,l1,l2
+integer i,l,j,n,k,h,l1,l2
 logical P
 write(*,*) 'vvedite text'
 read(*,'(A70)') text
@@ -21,8 +21,8 @@ P=.true.
 do while (P)
 h=0
 do j=1,100
-l1=LEN(a(j))
-l2=LEN(a(j+1))
+l1=LEN_trim(a(j))
+l2=LEN_trim(a(j+1))
 if (l1>l2) then
 buf=a(j)
 a(j)=a(j+1)
@@ -34,6 +34,6 @@ if (h==0) then
 P=.false.
 end if
 end do
-write(*,16) (a(i),i=1,100)
-16 format (1x,'massiv=',100(A,1x))	  
+write(*,16) (a(j),j=1,100)
+16 format (1x,'massiv=',100(A,1x))
 end
