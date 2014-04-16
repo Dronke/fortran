@@ -1,0 +1,265 @@
+Character name*10
+Integer r
+Write (*,*)'vvedite ima ishodnogo faila'
+Read(*,'(a10)')name
+R=8
+Do while (r/=0)
+Write(*,1)
+1 format (/1x,'vozmojni sled regimi:'/)
+Write(*,*) ' 1-sozdanie ishodnogo faila'
+Write(*,*)' 2-prosmotr ishodnogo faila'
+Write(*,*) ' 3-dobavlenie zapisi v fail'
+Write(*,*) ' 4-otvet na zapros'
+write(*,*) ' 5-uporadochivanie no stoimosti'
+Write(*,*)' 6-izmenenie zapisi'
+write(*,*) ' 7-udalenie zapisi'
+Write(*,*) ' 0-exit'
+Write(*,3)
+3 format (/1x,'vvedite regim:')
+Read(*,*) r
+Select case (r)
+Case (1)
+Call create(name)
+Case (2)
+Call view(name)
+Case (3)
+Call add (name)
+Case(4)
+Call janri2(name)
+Case (5)
+Case(6)
+Call izm (name)
+case (7)
+call del(name)
+case(0)
+exit
+Case default
+Write(*,*) 'takogo regima net'
+End select
+End do
+End
+
+subroutine create(name)
+character nazvanie*20, c, janr*15, stranaproizvoditel*15,name*10
+integer k,stoimost
+open(1,file=name,status='replace',access='direct',recl=100)
+k=0
+c='y'
+do while (c=='y'.or.c=='Y')
+k=k+1
+write(*,*)'vvedite nazvanie'
+read(*,'(a20)')nazvanie
+write(*,*)'vvedite janr'
+read(*,'(a15)')janr
+write(*,*)'vvedite stranu-proizvoditelya'
+read(*,'(a15)')stranaproizvoditel
+write(*,*)'vvedite stoimost'
+read(*,'(i15)')stoimost
+write(1,rec=k) nazvanie,janr,stranaproizvoditel,stoimost
+write(*,6)
+6 format(/1x,'bydete vvodit eshe zapisi?(y/n)' )
+read(*,'(a1)')c
+end do
+close(1)
+write(*,7)
+7 format (/1x,'fail sozdan')
+end
+
+Subroutine view(name)
+Character nazvanie*20,janr*15,stranaproizvoditel*15,name*10
+Integer k,stoimost
+Open (1,file=name,access='direct',recl=100)
+K=0
+Do while (.not.eof(1))
+K=k+1
+Read(1,rec=k) nazvanie,janr,stranaproizvoditel,stoimost
+Write(*,215) nazvanie,janr,stranaproizvoditel,stoimost
+215 format (1x,a20,1x,a15,1x,a15,1x,i15)
+End do
+Close(1)
+End
+
+subroutine add(name)
+character c,nazvanie*20,janr*15,stranaproizvoditel*15,name*10
+integer k,stoimost
+open(1,file=name,access='direct',recl=100)
+k=0
+215 format (1x,a20,1x,a15,1x,a15,1x,i15)
+do while (.not.eof(1))
+k=k+1
+read (1,rec=k) nazvanie,janr,stranaproizvoditel,stoimost
+write(*,215)nazvanie,janr,stranaproizvoditel,stoimost
+end do
+close(1)
+open(1,file=name,access='direct',recl=100)
+c='y'
+do while (c=='y'.or.c=='Y')
+k=k+1
+write(*,*)'vvedite nazvanie'
+read(*,'(a20)')nazvanie
+write(*,*)'vvedite janr'
+read(*,'(a15)')janr
+write(*,*)'vvedite stranu-proizvoditelya'
+read(*,'(a15)')stranaproizvoditel
+write(*,*)'vvedite stoimost'
+read(*,'(i15)')stoimost
+write(1,rec=k)nazvanie,janr,stranaproizvoditel,stoimost
+write(*,5)
+5 format(/1x,'bydete vvodit eshe zapisi?(y/n)' )
+read(*,'(a1)')c
+end do
+close(1)
+write(*,2)
+2 format (/1x,'zapisi dobavleni')
+end
+
+subroutine janri2(name)
+character name*10,name1*10,name2*10,nazvanie*20,janr*15,stranaproizvoditel*15,nazvanie1*20,janr1*15,stranaproizvoditel1*15
+integer stoimost,j1,j2,i,p,stoimost1,k1,k2
+open (1,file=name,access='direct',recl=100)
+write(*,*)'vvedite ima dop faila 1'
+read(*,'(a10)')name1
+write(*,*)'vvedite ima dop faila 2'
+read(*,'(a10)')name2
+open(2,file=name1,access='direct',recl=100)
+open(3,file=name2,access='direct',recl=100)
+j1=1
+j2=1
+i=1
+do while (.not.eof(1))
+read(1,rec=i)nazvanie,janr,stranaproizvoditel,stoimost
+if(janr=='hudozh') then
+write(2,rec=j1)nazvanie,janr,stranaproizvoditel,stoimost
+j1=j1+1
+end if
+if(janr=='dokum') then
+write(3,rec=j2)nazvanie,janr,stranaproizvoditel,stoimost
+j2=j2+1
+end if
+i=i+1
+end do
+close(3)
+close(2)
+close(1)
+write(*,*)'hudozh:'
+call view(name1)
+write(*,*)'dokum:'
+call view(name2)
+open (2,file=name1,access='direct',recl=100)
+k1=0
+do while(.not.eof(2))
+k1=k1+1
+end do
+close(2)
+open(3,file=name2,access='direct',recl=100)
+k2=0
+do while(.not.eof(3))
+k2=k2+1
+end do
+close(3)
+if (k1>k2) then
+p=1
+do while(p==1)
+open (2,file=name1,status='replace',access='direct',recl=100)
+p=0
+i=2
+do while (.not.eof(2))
+read(2,rec=i-1)nazvanie1,janr1,stranaproizvoditel1,stoimost1
+read(2,rec=i)nazvanie,janr,stranaproizvoditel,stoimost
+if (stoimost<=stoimost1) then
+write(2,rec=i-1)nazvanie,janr,stranaproizvoditel,stoimost
+write(2,rec=i)nazvanie1,janr1,stranaproizvoditel1,stoimost1
+end if
+i=i+1
+end do
+close(2)
+end do
+call view(name1)
+else
+p=1
+do while(p==1)
+open (3,file=name2,status='replace',access='direct',recl=100)
+p=0
+i=2
+do while (.not.eof(3))
+read(3,rec=i-1)nazvanie1,janr1,stranaproizvoditel1,stoimost1
+read(3,rec=i)nazvanie,janr,stranaproizvoditel,stoimost
+if (stoimost<=stoimost1) then
+write(3,rec=i-1)nazvanie,janr,stranaproizvoditel,stoimost
+write(3,rec=i)nazvanie1,janr1,stranaproizvoditel1,stoimost1
+end if
+i=i+1
+end do
+close(3)
+end do
+call view(name2)
+end if
+end
+
+
+subroutine izm(name)
+character nazvanie*20, c, janr*15, stranaproizvoditel*15,name*10
+integer k1,stoimost
+open(1,file=name,access='direct',recl=100)
+k=0
+do while (.not.eof(1))
+k=k+1
+read (1,rec=k) nazvanie,janr,stranaproizvoditel,stoimost
+write(*,215)nazvanie,janr,stranaproizvoditel,stoimost
+215 format (1x,a20,1x,a15,1x,a15,1x,i15)
+end do
+close(1)
+open(1,file=name,access='direct',recl=100)
+c='y'
+do while (c=='y'.or.c=='Y')
+k=k+1
+write(*,*)'vvedite nomer stroki,kotoryu nado izmenit'
+read(*,*)k1
+write(*,*)'vvedite nazvanie'
+read(*,'(a20)')nazvanie
+write(*,*)'vvedite janr'
+read(*,'(a15)')janr
+write(*,*)'vvedite stranu-proizvoditelya'
+read(*,'(a15)')stranaproizvoditel
+write(*,*)'vvedite stoimost'
+read(*,'(i15)')stoimost
+write(1,rec=k1)nazvanie,janr,stranaproizvoditel,stoimost
+close(1)
+write(*,8)
+8 format (/1x,'bydete izmenat eshe zapisi?(y/n)')
+read(*,'(a1)')c
+end do
+write(*,9)
+9 format(/1x,'file izmenen')
+end
+
+subroutine del(name)
+character nazvanie*20, nazvanie1*20,name*10
+logical p
+integer k,nom,i
+open (1,file=name,access='direct',form='unformatted',recl=100)
+Write (*,*) 'vvedite nazvanie'
+Read (*,'(A15)') nazvanie1
+p=.false.
+k=0
+do while (.not.eof(1).or..not.p)
+k=k+1
+Read (1,rec=k) nazvanie,janr,stranaproizvoditel,stoimost
+if (nazvanie==nazvanie1) then
+Nom=k
+p=.true.
+end if
+end do
+Read(1,rec=nom) nazvanie,janr,stranaproizvoditel,stoimost
+if (nom==k) then
+read (1,rec=nom-1)
+else
+do i=nom,k-1,1
+read (1,rec=i+1)nazvanie,janr,stranaproizvoditel,stoimost
+write (1,rec=i) nazvanie,janr,stranaproizvoditel,stoimost
+end do
+end if
+endfile(1)
+write(*,*)'zapis ', nazvanie, 'udalena'
+close(1)
+end
