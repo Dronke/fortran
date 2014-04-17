@@ -115,7 +115,7 @@ end
 
 subroutine janri2(name)
 character name*10,name1*10,name2*10,nazvanie*20,janr*15,stranaproizvoditel*15,nazvanie1*20,janr1*15,stranaproizvoditel1*15
-integer stoimost,j1,j2,i,p,stoimost1,k1,k2
+integer stoimost,j1,j2,i,p,stoimost1,k
 open (1,file=name,access='direct',recl=100)
 write(*,*)'vvedite ima dop faila 1'
 read(*,'(a10)')name1
@@ -145,54 +145,66 @@ write(*,*)'hudozh:'
 call view(name1)
 write(*,*)'dokum:'
 call view(name2)
-open (2,file=name1,access='direct',recl=100)
-k1=0
-do while(.not.eof(2))
-k1=k1+1
-end do
-close(2)
-open(3,file=name2,access='direct',recl=100)
-k2=0
-do while(.not.eof(3))
-k2=k2+1
-end do
-close(3)
-if (k1>k2) then
+j1=j1-1
+j2=j2-1
+if (j1>=j2) then
+write(*,*)'1'
 p=1
 do while(p==1)
-open (2,file=name1,status='replace',access='direct',recl=100)
-p=0
-i=2
-do while (.not.eof(2))
-read(2,rec=i-1)nazvanie1,janr1,stranaproizvoditel1,stoimost1
-read(2,rec=i)nazvanie,janr,stranaproizvoditel,stoimost
-if (stoimost<=stoimost1) then
-write(2,rec=i-1)nazvanie,janr,stranaproizvoditel,stoimost
-write(2,rec=i)nazvanie1,janr1,stranaproizvoditel1,stoimost1
-end if
-i=i+1
+ open (2,file=name1,status='replace',access='direct',recl=100)
+ p=0
+ i=2
+ do while (.not.eof(2))
+  read(2,rec=i-1)nazvanie1,janr1,stranaproizvoditel1,stoimost1
+  read(2,rec=i)nazvanie,janr,stranaproizvoditel,stoimost
+  if (stoimost<=stoimost1) then
+   write(2,rec=i-1)nazvanie,janr,stranaproizvoditel,stoimost
+   write(2,rec=i)nazvanie1,janr1,stranaproizvoditel1,stoimost1
+  end if
+  i=i+1
+ end do
+ close(2)
 end do
-close(2)
-end do
-call view(name1)
+write(*,*) '11'
+Open (4,file=name1,access='direct',recl=100)
+K=0
+Do while (.not.eof(4))
+K=k+1
+Read(4,rec=k) nazvanie,janr,stranaproizvoditel,stoimost
+Write(*,215) nazvanie,janr,stranaproizvoditel,stoimost
+215 format (1x,a20,1x,a15,1x,a15,1x,i15)
+End do
+Close(4)
+write(*,*) '111'
 else
-p=1
-do while(p==1)
-open (3,file=name2,status='replace',access='direct',recl=100)
-p=0
-i=2
-do while (.not.eof(3))
-read(3,rec=i-1)nazvanie1,janr1,stranaproizvoditel1,stoimost1
-read(3,rec=i)nazvanie,janr,stranaproizvoditel,stoimost
-if (stoimost<=stoimost1) then
-write(3,rec=i-1)nazvanie,janr,stranaproizvoditel,stoimost
-write(3,rec=i)nazvanie1,janr1,stranaproizvoditel1,stoimost1
-end if
-i=i+1
-end do
-close(3)
-end do
-call view(name2)
+ write(*,*) '2'
+ p=1
+ do while(p==1)
+  open (3,file=name2,status='replace',access='direct',recl=100)
+  p=0
+  i=2
+  do while (.not.eof(3))
+   read(3,rec=i-1)nazvanie1,janr1,stranaproizvoditel1,stoimost1
+   read(3,rec=i)nazvanie,janr,stranaproizvoditel,stoimost
+   if (stoimost<=stoimost1) then
+    write(3,rec=i-1)nazvanie,janr,stranaproizvoditel,stoimost
+    write(3,rec=i)nazvanie1,janr1,stranaproizvoditel1,stoimost1
+   end if
+   i=i+1
+  end do
+  close(3)
+  end do
+  write(*,*) '22'
+  open (5,file=name2,access='direct',recl=100)
+ K=0
+Do while (.not.eof(5))
+K=k+1
+Read(5,rec=k) nazvanie,janr,stranaproizvoditel,stoimost
+Write(*,216) nazvanie,janr,stranaproizvoditel,stoimost
+216 format (1x,a20,1x,a15,1x,a15,1x,i15)
+End do
+Close(5)
+  write(*,*) '222'
 end if
 end
 
