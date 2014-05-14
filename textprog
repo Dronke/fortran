@@ -10,9 +10,8 @@ Write(*,*) ' 1-sozdanie ishodnogo faila'
 Write(*,*)' 2-prosmotr ishodnogo faila'
 Write(*,*) ' 3-dobavlenie zapisi v fail'
 Write(*,*) ' 4-otvet na zapros'
-write(*,*) ' 5-uporadochivanie no stoimosti'
-Write(*,*)' 6-izmenenie zapisi'
-write(*,*) ' 7-udalenie zapisi'
+Write(*,*)' 5-izmenenie zapisi'
+write(*,*) ' 6-udalenie zapisi'
 Write(*,*) ' 0-exit'
 Write(*,3)
 3 format (/1x,'vvedite regim:')
@@ -27,9 +26,8 @@ Call add (name)
 Case(4)
 Call janri2(name)
 Case (5)
-Case(6)
 Call izm (name)
-case (7)
+case (6)
 call del(name)
 case(0)
 exit
@@ -115,7 +113,7 @@ end
 
 subroutine janri2(name)
 character name*10,name1*10,name2*10,nazvanie*20,janr*15,stranaproizvoditel*15,nazvanie1*20,janr1*15,stranaproizvoditel1*15
-integer stoimost,j1,j2,i,p,stoimost1,k
+integer stoimost,j1,j2,i,r,stoimost1,k
 open (1,file=name,access='direct',recl=100)
 write(*,*)'vvedite ima dop faila 1'
 read(*,'(a10)')name1
@@ -147,12 +145,13 @@ write(*,*)'dokum:'
 call view(name2)
 j1=j1-1
 j2=j2-1
+write(*,*) 'Sravnenie kol-va strok v oboih failah'
 if (j1>=j2) then
-write(*,*)'1'
-p=1
-do while(p==1)
- open (2,file=name1,status='replace',access='direct',recl=100)
- p=0
+write(*,*) 'j1>=j2'
+r=1
+do while(r/=0)
+open (2,file=name1,access='direct',recl=100)
+ r=0
  i=2
  do while (.not.eof(2))
   read(2,rec=i-1)nazvanie1,janr1,stranaproizvoditel1,stoimost1
@@ -160,12 +159,12 @@ do while(p==1)
   if (stoimost<=stoimost1) then
    write(2,rec=i-1)nazvanie,janr,stranaproizvoditel,stoimost
    write(2,rec=i)nazvanie1,janr1,stranaproizvoditel1,stoimost1
+   r=r+1
   end if
   i=i+1
  end do
  close(2)
 end do
-write(*,*) '11'
 Open (4,file=name1,access='direct',recl=100)
 K=0
 Do while (.not.eof(4))
@@ -175,13 +174,11 @@ Write(*,215) nazvanie,janr,stranaproizvoditel,stoimost
 215 format (1x,a20,1x,a15,1x,a15,1x,i15)
 End do
 Close(4)
-write(*,*) '111'
 else
- write(*,*) '2'
- p=1
- do while(p==1)
-  open (3,file=name2,status='replace',access='direct',recl=100)
-  p=0
+write(*,*) 'j1<j2'
+ do while(r/=0)
+ open (3,file=name2,access='direct',recl=100)
+  r=0
   i=2
   do while (.not.eof(3))
    read(3,rec=i-1)nazvanie1,janr1,stranaproizvoditel1,stoimost1
@@ -189,22 +186,22 @@ else
    if (stoimost<=stoimost1) then
     write(3,rec=i-1)nazvanie,janr,stranaproizvoditel,stoimost
     write(3,rec=i)nazvanie1,janr1,stranaproizvoditel1,stoimost1
+	r=r+1
    end if
    i=i+1
   end do
   close(3)
-  end do
-  write(*,*) '22'
-  open (5,file=name2,access='direct',recl=100)
- K=0
+ end do
+open (5,file=name2,access='direct',recl=100)
+K=0
 Do while (.not.eof(5))
 K=k+1
 Read(5,rec=k) nazvanie,janr,stranaproizvoditel,stoimost
+write(*,*) 'Uporyadochenniy file po stoimosti:'
 Write(*,216) nazvanie,janr,stranaproizvoditel,stoimost
 216 format (1x,a20,1x,a15,1x,a15,1x,i15)
 End do
 Close(5)
-  write(*,*) '222'
 end if
 end
 
@@ -249,29 +246,30 @@ subroutine del(name)
 character nazvanie*20, nazvanie1*20,name*10
 logical p
 integer k,nom,i
-open (1,file=name,access='direct',form='unformatted',recl=100)
+open (1,file=name,access='direct',form='formatted',recl=100)
 Write (*,*) 'vvedite nazvanie'
 Read (*,'(A15)') nazvanie1
 p=.false.
 k=0
 do while (.not.eof(1).or..not.p)
 k=k+1
-Read (1,rec=k) nazvanie,janr,stranaproizvoditel,stoimost
+Read (1,221,rec=k) nazvanie,janr,stranaproizvoditel,stoimost
+221 format (1x,a20,1x,a15,1x,a15,1x,i15)
 if (nazvanie==nazvanie1) then
 Nom=k
 p=.true.
 end if
 end do
-Read(1,rec=nom) nazvanie,janr,stranaproizvoditel,stoimost
+Read(1,221,rec=nom) nazvanie,janr,stranaproizvoditel,stoimost
 if (nom==k) then
 read (1,rec=nom-1)
 else
 do i=nom,k-1,1
-read (1,rec=i+1)nazvanie,janr,stranaproizvoditel,stoimost
-write (1,rec=i) nazvanie,janr,stranaproizvoditel,stoimost
+read (1,221,rec=i+1)nazvanie,janr,stranaproizvoditel,stoimost
+write (1,221,rec=i) nazvanie,janr,stranaproizvoditel,stoimost
 end do
 end if
 endfile(1)
-write(*,*)'zapis ', nazvanie, 'udalena'
+write(*,*)'zapis ', nazvanie1, 'udalena'
 close(1)
 end
