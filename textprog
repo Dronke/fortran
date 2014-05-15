@@ -119,8 +119,8 @@ write(*,*)'vvedite ima dop faila 1'
 read(*,'(a10)')name1
 write(*,*)'vvedite ima dop faila 2'
 read(*,'(a10)')name2
-open(2,file=name1,access='direct',recl=100)
-open(3,file=name2,access='direct',recl=100)
+open(2,file=name1,access='direct',status='replace',recl=100)
+open(3,file=name2,access='direct',status='replace',recl=100)
 j1=1
 j2=1
 i=1
@@ -244,29 +244,25 @@ end
 
 subroutine del(name)
 character nazvanie*20, nazvanie1*20,name*10
-logical p
 integer k,nom,i
-open (1,file=name,access='direct',form='formatted',recl=100)
+open (1,file=name,access='direct',form='unformatted',recl=100)
 Write (*,*) 'vvedite nazvanie'
 Read (*,'(A15)') nazvanie1
-p=.false.
 k=0
-do while (.not.eof(1).or..not.p)
+do while (.not.eof(1))
 k=k+1
-Read (1,221,rec=k) nazvanie,janr,stranaproizvoditel,stoimost
-221 format (1x,a20,1x,a15,1x,a15,1x,i15)
+Read (1,rec=k) nazvanie,janr,stranaproizvoditel,stoimost
 if (nazvanie==nazvanie1) then
 Nom=k
-p=.true.
 end if
 end do
-Read(1,221,rec=nom) nazvanie,janr,stranaproizvoditel,stoimost
+Read(1,rec=nom) nazvanie,janr,stranaproizvoditel,stoimost
 if (nom==k) then
 read (1,rec=nom-1)
 else
 do i=nom,k-1,1
-read (1,221,rec=i+1)nazvanie,janr,stranaproizvoditel,stoimost
-write (1,221,rec=i) nazvanie,janr,stranaproizvoditel,stoimost
+read (1,rec=i+1)nazvanie,janr,stranaproizvoditel,stoimost
+write (1,rec=i) nazvanie,janr,stranaproizvoditel,stoimost
 end do
 end if
 endfile(1)
