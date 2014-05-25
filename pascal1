@@ -1,0 +1,43 @@
+const
+n = 5; m = 5;
+ 
+var
+matrix: array[1..n,1..m] of integer;
+i,j,k:integer;
+sum,sa:real;
+
+begin
+randomize;
+for i := 1 to n do begin
+for j := 1 to m do begin
+matrix[i,j] := random(100);
+write(matrix[i,j]:3);
+end;
+writeln;
+end;
+
+sum:=0;
+k:=0;
+for i:=1 to n do begin
+for j:=1 to m do begin
+if matrix[i,j]>matrix[i,i] then begin
+sum:=sum+matrix[i,j];
+k:=k+1;
+end;
+end;
+end;
+sa:=sum/k;
+
+sum:=0;
+for i:=1 to n do begin
+sum:=sum+matrix[i,i];
+end;
+
+writeln('srednee arifmeticheskoe elementov matrici, kazhdiy iz kotorih bolshe diagonalnogo elementa');
+writeln(sa);
+writeln('summa glavnoy diagonali');
+writeln(sum);
+
+readln
+end.
+
