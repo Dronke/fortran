@@ -64,24 +64,23 @@ var X,H,S1,S2,D:real;
 N:integer;
 label goback;
 begin
-N:=50;
+N:=5;
 H:=(B-A)/N;
 S1:=0;
 goback:
 S2:=0;
-x:=A;
+X:=A;
 begin
 while (X<=B) do
+begin
 S2:=S2+F(X)*H;
 X:=X+H;
+end;
 end;
 D:=abs(S1-S2);
 S1:=S2;
 H:=H/2;
-if (D>E) then
-begin
-goto goback;
-end;
+if (D>E) then goto goback;
 fint:=S1;
 end;
 
@@ -100,8 +99,7 @@ writeln(B);
 S1:=fint(F1,A,B,E);
 S2:=fint(F2,A,B,E);
 S:=S1-S2;
-writeln(S);
-WRITELN  ('pri c=',C:3,' ','S=',S:15,5);
+WRITELN  ('pri c=',C:3,' ','S=',S:5,5);
 C:=C+0.1;
 end;
 end.
