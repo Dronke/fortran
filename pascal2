@@ -1,0 +1,108 @@
+Program Zadacha1;
+type
+func=function(x:real):real;
+var
+i:integer; 
+C,E,A,B,S:real;
+
+
+FUNCTION F(X:real):real;
+begin
+F:=((x-c)*(x-c))*((x+c)*(x+c)*(x+c))-x*x;
+END;
+
+FUNCTION F1(X:real):real;
+begin
+F1:=((x-c)*(x-c))*((x+c)*(x+c)*(x+c));
+END;
+
+FUNCTION F2(X:real):real;
+begin
+F2:=x*x;
+END;
+
+
+
+function Exloc(F1:func;A,B,E:real;M:integer):real;
+var XL,XR,S:real;
+begin
+XL:=A;
+XR:=B;
+begin
+WHILE abs(XL-XR)>E do
+begin
+S:=abs(XL+XR)/2;
+IF M*(F(S+E/2)-F(S-E/2))<0 THEN
+XR:=S
+ELSE
+XL:=S
+end;
+EXLOC:=F(XR);
+end;
+end;
+
+function cor(F:func;A,B,E:real):real;
+var XL,XR,XC:real;
+begin
+XL:=A;
+XR:=B;
+begin
+while abs(XL-XR)>E do
+begin
+XC:=(XL+XR)/2;
+if (F(XL)*F(XC)>0) then
+XL:=XC
+else
+XR:=XC;
+end;
+cor:=XC;
+end;
+end;
+
+function fint(F:func;A,B,E:real):real;
+var X,H,S1,S2,D:real;
+N:integer;
+label goback;
+begin
+N:=50;
+H:=(B-A)/N;
+S1:=0;
+goback:
+S2:=0;
+x:=A;
+begin
+while (X<=B) do
+S2:=S2+F(X)*H;
+X:=X+H;
+end;
+D:=abs(S1-S2);
+S1:=S2;
+H:=H/2;
+if (D>E) then
+begin
+goto goback;
+end;
+fint:=S1;
+end;
+
+var
+S1,S2:real;
+begin
+writeln('vvedite znachenie tochnosti');
+readln(E);
+C:=0.8;
+for i:=1 to 5 do
+begin
+A:=exloc(F1,0,C,E,1);
+writeln(A);
+B:=cor(F,0,C,E);
+writeln(B);
+S1:=fint(F1,A,B,E);
+S2:=fint(F2,A,B,E);
+S:=S1-S2;
+writeln(S);
+WRITELN  ('pri c=',C:3,' ','S=',S:15,5);
+C:=C+0.1;
+end;
+end.
+
