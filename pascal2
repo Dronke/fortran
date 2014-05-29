@@ -24,18 +24,18 @@ END;
 
 
 function Exloc(F1:func;A,B,E:real;M:integer):real;
-var XL,XR,S:real;
+var XL,XR,XC:real;
 begin
 XL:=A;
 XR:=B;
 begin
 WHILE abs(XL-XR)>E do
 begin
-S:=abs(XL+XR)/2;
-IF M*(F(S+E/2)-F(S-E/2))<0 THEN
-XR:=S
+XC:=abs(XL+XR)/2;
+IF (M*(F(XC+E/2)-F(XC-E/2))<0) THEN
+XR:=XC
 ELSE
-XL:=S
+XL:=XC
 end;
 EXLOC:=F(XR);
 end;
@@ -46,10 +46,9 @@ var XL,XR,XC:real;
 begin
 XL:=A;
 XR:=B;
-begin
 while abs(XL-XR)>E do
 begin
-XC:=(XL+XR)/2;
+XC:=abs(XL+XR)/2;
 if (F(XL)*F(XC)>0) then
 XL:=XC
 else
@@ -57,17 +56,15 @@ XR:=XC;
 end;
 cor:=XC;
 end;
-end;
 
 function fint(F:func;A,B,E:real):real;
 var X,H,S1,S2,D:real;
 N:integer;
-label goback;
 begin
 N:=5;
 H:=(B-A)/N;
 S1:=0;
-goback:
+repeat
 S2:=0;
 X:=A;
 begin
@@ -80,12 +77,10 @@ end;
 D:=abs(S1-S2);
 S1:=S2;
 H:=H/2;
-if (D>E) then goto goback;
+until D<=E;
 fint:=S1;
 end;
 
-var
-S1,S2:real;
 begin
 writeln('vvedite znachenie tochnosti');
 readln(E);
@@ -93,14 +88,11 @@ C:=0.8;
 for i:=1 to 5 do
 begin
 A:=exloc(F1,0,C,E,1);
-writeln(A);
+write('A=',A:3:3);
 B:=cor(F,0,C,E);
-writeln(B);
-S1:=fint(F1,A,B,E);
-S2:=fint(F2,A,B,E);
-S:=S1-S2;
-WRITELN  ('pri c=',C:3,' ','S=',S:5,5);
+write(', B=',B:3:3,',');
+S:=fint(F,A,B,E);
+WRITELN  (' pri c=',C:3,' ','S=',S:5:3);
 C:=C+0.1;
 end;
 end.
-
